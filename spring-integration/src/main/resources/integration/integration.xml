@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:file="http://www.springframework.org/schema/integration/file"
+       xmlns:feed="http://www.springframework.org/schema/integration/feed"
+       xsi:schemaLocation="http://www.springframework.org/schema/integration/feed http://www.springframework.org/schema/integration/feed/spring-integration-feed.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd">
+
+    <!--
+    <feed:inbound-channel-adapter id="news" url="http://spring.io/blog.atom"
+    auto-startup="${auto.startup:true}">
+        <int:poller fixed-rate="5000" />
+    </feed:inbound-channel-adapter>
+    <int:transformer
+    input-channel="news"
+    expression="payload.title +'@'+ payload.link + '#{systemProperties['line.separator']}'"
+    output-channel="file" />
+
+    <file:outbound-channel-adapter id="file"
+     mode="APPEND" charset="UTF-8" directory="/tmp/si" filename-generator-expression="'${feed.file.name:SpringBlog}'"/>
+
+    -->
+    <int:channel id="directChannel"/>
+    <int:publish-subscribe-channel id="examplePubSubChannel" />
+
+    <int:channel id="failFastChannel">
+        <int:dispatcher failover="false" />
+    </int:channel>
+    <int:channel id="channelWithFixedOrderSequenceFailOver">
+        <int:dispatcher load-balancer="none"/>
+    </int:channel>
+    <int:channel id="numberChannel" datatype="java.lang.Number" />
+    <int:channel  id="stringOrNumberChannel" datatype="java.lang.String, java.lang.Number"
+        message-converter="strToInt"
+    />
+
+
+    <int:converter ref="strToInt" />
+    <bean id="strToInt" class="integration.StringToIntegerConverter" />
+    <int:channel  id="queueChannel">
+        <int:queue capacity="25" />
+    </int:channel>
+
+    <!--
+    <int:channel id="dbBackedChannel">
+        <int:queue message-store="channelStore" />
+    </int:channel>
+    <bean id="channelStore" class="org.springframework.integration.jdbc.store.JdbcChannelMessageStore">
+        <property name="dataSource" ref="dataSource" />
+        <property name="channelMessageStoreQueryProvider" ref="queryProvider" />
+    </bean>
+    <int:publish-subscribe-channel id="pubsubChannel" task-executor="someExecutor" />
+
+    //apply-sequence is set to false by default. PubSubChannel can send exact same Message instance to multiple outbound
+    //channel, but the message header values are different when the flag is set to true.
+    <int:publish-subscribe-channel id="publishSubscribeChannel" apply-sequence="true" />
+
+
+    -->
+    <!--
+    The sender and receiver, they don't share active transaction context.
+    so Message handler(receiver and consumer) may throw exception, but the send invocation has already returned successfully.
+
+    load-balancer and failover options are also both available on dispatcher.
+    The default is round-robin load-balancing with failover enabled.
+    -->
+    <int:channel id="executorChannel">
+        <int:dispatcher task-executor="someExecutor" />
+    </int:channel>
+    <int:channel id="executorChannelWithoutFailover">
+        <int:dispatcher task-executor="someExecutor" failover="false" />
+    </int:channel>
+
+    <!--
+    //By default, the channel will consult the priority header of the message.
+    But a custom comparator reference may be provided instead.
+
+    <int:channel id="priorityChannel">
+        <int:priority-queue capacity="20" />
+    </int:channel>
+    <int:channel id="priorityChannel" datatype="example.Widget">
+        <int:priority-queue comparator="widgetComparator" capacity="10"/>
+    </int:channel>
+    -->
+    <int:channel id="exampleChannel">
+        <int:interceptors>
+            <ref bean="trafficMonitorInterceptor"/>
+        </int:interceptors>
+    </int:channel>
+    <int:channel-interceptor pattern="input*, bar*, foo" order="3">
+        <bean class="foo.barSampleInterceptor" />
+    </int:channel-interceptor>
+ </beans>

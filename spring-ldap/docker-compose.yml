@@ -1,0 +1,17 @@
+version: '2'
+services:
+  apacheds:
+    image: h3nrik/apacheds
+    container_name: apacheds
+    ports:
+      - "389:10389"
+
+  ldap-demo:
+    image: ryukato/ldap-demo
+    container_name: ldap-demo
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    depends_on:
+      - apacheds
