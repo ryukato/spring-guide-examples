@@ -68,3 +68,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		);
 	}
 }
+
+
+class Person {
+
+}

@@ -120,6 +120,14 @@
 				<version>${jackson.version}</version>
 			</dependency>
 
+			<!-- flyway -->
+			<!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-core -->
+			<dependency>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-core</artifactId>
+				<version>3.0</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
@@ -152,6 +160,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.5.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.flywaydb</groupId>
+					<artifactId>flyway-maven-plugin</artifactId>
+					<version>4.2.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
