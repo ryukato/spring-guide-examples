@@ -27,7 +27,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<junit-version>4.12</junit-version>
 		<java.version>1.8</java.version>
-		<jackson.version>2.8.7</jackson.version>
+		<jackson.version>2.8.11.3</jackson.version>
 		<docker.image.prefix>ryukato</docker.image.prefix>
 	</properties>
 	<dependencyManagement>
